@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: pthen
+# key: pthen
+# --
+}).then(function (${parameters}) {

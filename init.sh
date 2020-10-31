@@ -7,10 +7,20 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $script_dir
 
 delete_and_link() {
-    link_path=$1
-    dest_path=$2
+    local link_path=$1
+    local dest_path=$2
     rm -rf $link_path
     ln -s $script_dir/$dest_path $link_path
+}
+
+# only delete and link files that exist in the repo
+link_dir() {
+    local link_path=$1
+    local dest_path=$2
+    for file in `ls ${dest_path}`; do
+        echo "linking: $link_path/$file $dest_path/$file"
+        delete_and_link "$link_path/$file" "$dest_path/$file"
+    done
 }
 
 exists()
@@ -20,7 +30,7 @@ exists()
 
 # emacs
 echo "Initializing emacs..."
-delete_and_link ~/.emacs.d .emacs.d
+link_dir ~/.emacs.d emacs.d
 
 # TODO zsh + bash
 # echo "Initializing fish..."
