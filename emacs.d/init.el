@@ -26,6 +26,7 @@
 ;; (set-default 'truncate-lines t)
 
 (use-package web-mode
+  :no-require t
   :ensure f
   :config
   ;; (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -68,10 +69,11 @@
   :ensure t
   :config
   ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  ;; (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-global-mode))
 
 (use-package js2-mode
+  :no-require t
   :ensure f
   :config
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
@@ -153,6 +155,7 @@
   (setq ag-arguments '("--smart-case" "--stats" "-p" "/Users/ssu/immuta/bodata/.ignore")))
 
 (use-package indium
+  :no-require t
   :ensure f
   :config
   (add-hook 'js-mode-hook #'indium-interaction-mode)
@@ -237,6 +240,7 @@
   (put 'narrow-to-region 'disabled nil))
 
 (use-package tuareg
+  :no-require t
   :ensure f
   :config
   (push "<SHARE_DIR>/emacs/site-lisp" load-path) ; directory containing merlin.el
@@ -275,6 +279,7 @@
 ;;   origami            20180101.1553 installed             Flexible text folding
 
 (use-package reason-mode
+  :no-require t
   :ensure f)
 
 (use-package scala-mode
@@ -295,7 +300,8 @@
   (setq indent-guide-delay 0)
   (setq indent-guide-char "|"))
 
-(use-package terraform-mode)
+(use-package terraform-mode
+  :no-require t)
 
 (use-package cc-mode
   :config
@@ -505,7 +511,7 @@ point reaches the beginning or end of the buffer, stop there."
                                 (other-window -1)))
 
 (use-package origami
-  :ensure t
+  :ensure f
   :config
   (global-set-key (kbd "<backtab>") 'origami-toggle-node)
   (setq global-origami-mode t))
