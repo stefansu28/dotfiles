@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: prettyprint
+# key: pp
+# --
+println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+println(${value})
+println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

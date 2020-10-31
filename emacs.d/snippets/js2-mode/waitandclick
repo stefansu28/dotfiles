@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: waitandclick
+# key: wc
+# --
+helper.waitAndClick(${selector});

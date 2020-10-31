@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: consoledir
+# key: cdir
+# --
+console.dir(${value}, {depth: null, showHidden: true, colors:true});
