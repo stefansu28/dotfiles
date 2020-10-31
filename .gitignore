@@ -11,4 +11,5 @@ emacs.d/url/cookies
 emacs.d/ac-comphist.dat
 emacs.d/emojis/
 emacs.d/eshell/
+emacs.d/*.elc
 
