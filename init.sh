@@ -20,7 +20,7 @@ exists()
 
 # emacs
 echo "Initializing emacs..."
-delete_and_link ~/.emacs.d .emacs.d
+delete_and_link ~/.emacs.d/init.el emacs.d/init.el
 
 # TODO zsh + bash
 # echo "Initializing fish..."

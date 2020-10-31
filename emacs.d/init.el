@@ -8,9 +8,8 @@
 
 ;; (add-to-list 'package-archives
 ;;              '("MELPA Stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("MELPA" . "https://melpa.org/packages/") t)
-;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("MELPA" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
@@ -68,13 +67,19 @@
 (use-package projectile
   :ensure t
   :config
+  ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  ;; (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-global-mode))
 
 (use-package js2-mode
+  :ensure f
   :config
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode)))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  (setq js-switch-indent-offset 4)
+  (setq js2-indent-switch-body t))
 
 (use-package python-mode
+  :ensure f
   :hook (python-mode . company-mode))
 
 (defun setup-tide-mode ()
@@ -148,7 +153,7 @@
   (setq ag-arguments '("--smart-case" "--stats" "-p" "/Users/ssu/immuta/bodata/.ignore")))
 
 (use-package indium
-  ;; :ensure f
+  :ensure f
   :config
   (add-hook 'js-mode-hook #'indium-interaction-mode)
   )
@@ -166,7 +171,6 @@
 (use-package org
   :ensure t
   :config
-  ;; (require 'org)
   (setq org-agenda-files '("~/Dropbox/org"))
   ;; (setq org-directory "~/org")
   (global-set-key (kbd "C-c a") 'org-agenda)
@@ -213,9 +217,13 @@
 
   ;; uncomment to add style.css to html export
   ;; (add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook)
+
+  (add-hook 'org-mode-hook (lambda () (org-indent-mode t)))
+  (setq org-startup-indented t)
   )
 
 (use-package org-bullets
+  :ensure f
   :config
   ;; use org-bullets-mode for utf8 symbols as org bullets
   ;; make available "org-bullet-face" such that I can control the font size individually
@@ -229,6 +237,7 @@
   (put 'narrow-to-region 'disabled nil))
 
 (use-package tuareg
+  :ensure f
   :config
   (push "<SHARE_DIR>/emacs/site-lisp" load-path) ; directory containing merlin.el
   ;; (setq merlin-command "<BIN_DIR>/ocamlmerlin")  ; needed only if ocamlmerlin not already in your PATH
@@ -256,8 +265,8 @@
 
   (setq dashboard-items '((recents  . 5)
                           (bookmarks . 5)
-                          (projects . 5)
-                          (agenda . 5)
+                          (projects . 5) ;; need projectile
+                          (agenda . 5) ;; need org mode
                           ;; (registers . 5)
                           ))
   (setq show-week-agenda-p t))
@@ -265,9 +274,11 @@
 ;;   htmlize            20180412.1944 installed             Convert buffer text and decorations to HTML.
 ;;   origami            20180101.1553 installed             Flexible text folding
 
-(use-package reason-mode)
+(use-package reason-mode
+  :ensure f)
 
 (use-package scala-mode
+  :ensure f
   :interpreter
   ("scala" . scala-mode))
 
@@ -278,7 +289,11 @@
 (use-package indent-guide
   :ensure f
   :hook ((nim-mode . indent-guide-mode)
-         (python-mode . indent-guide-mode)))
+         (python-mode . indent-guide-mode))
+  :config
+  ;; (set-face-foreground 'indent-guide-face "dimgray")
+  (setq indent-guide-delay 0)
+  (setq indent-guide-char "|"))
 
 (use-package terraform-mode)
 
@@ -286,9 +301,29 @@
   :config
   (setq c-basic-offset 4))
 
-(use-package rust-mode
-  :ensure f)
+;; c-mode-common stuff
+(defun my-cc-hook ()
+  (setq c-basic-offset 4)
+  (c-set-offset 'access-label '-)
+  (c-set-offset 'case-label '+)
+  (c-set-offset 'topmost-intro '0)
+  (c-set-offset 'inclass '++)
+  (c-set-offset 'brace-list-entry '+))
+(add-hook 'c-mode-common-hook 'my-cc-hook)
+(add-hook 'c-mode-common-hook 'company-mode)
+ 
 
+(use-package rust-mode
+  ;; https://github.com/rust-lang/rust-mode
+  :ensure t
+  :config
+  (add-hook 'rust-mode-hook (lambda () (setq indent-tabs-mode nil)))
+  ;; enable format on save
+  ;; (setq rust-format-on-save t)
+  (define-key rust-mode-map (kbd "C-c C-c") 'rust-run))
+
+
+;; try to get language server working
 ;; (use-package lsp-mode
 ;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
 ;;          ;; (rust-mode . lsp)
@@ -301,6 +336,7 @@
 ;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l", "s-l")
 ;;   (setq lsp-keymap-prefix "C-c l"))
 
+;; scala lsp backend
 ;; (use-package lsp-metals
 ;;   :config (setq lsp-metals-treeview-show-when-views-received nil))
 
@@ -390,6 +426,8 @@
   ;; (company-flx-mode))
   )
 
+
+;; work commands
 (defun bomocha ()
   (interactive)
   (async-shell-command (format "cd ~/immuta/bodata/service; npm run mocha -- %s" (shell-quote-argument buffer-file-name)) "*bomocha output*")
@@ -466,22 +504,25 @@ point reaches the beginning or end of the buffer, stop there."
                                 (interactive)
                                 (other-window -1)))
 
-;; todo add to origami config
-(global-set-key (kbd "<backtab>") 'origami-toggle-node)
+(use-package origami
+  :ensure t
+  :config
+  (global-set-key (kbd "<backtab>") 'origami-toggle-node)
+  (setq global-origami-mode t))
 
-;; Windmove keybindings
-(global-set-key (kbd "S-s-<left>") (lambda ()
-                                (interactive)
-                                (windmove-left)))
-(global-set-key (kbd "S-s-<right>") (lambda ()
-                                (interactive)
-                                (windmove-right)))
-(global-set-key (kbd "S-s-<up>") (lambda ()
-                                (interactive)
-                                (windmove-up)))
-(global-set-key (kbd "S-s-<down>") (lambda ()
-                                (interactive)
-                                (windmove-down)))
+;; ;; Windmove keybindings
+;; (global-set-key (kbd "S-s-<left>") (lambda ()
+;;                                 (interactive)
+;;                                 (windmove-left)))
+;; (global-set-key (kbd "S-s-<right>") (lambda ()
+;;                                 (interactive)
+;;                                 (windmove-right)))
+;; (global-set-key (kbd "S-s-<up>") (lambda ()
+;;                                 (interactive)
+;;                                 (windmove-up)))
+;; (global-set-key (kbd "S-s-<down>") (lambda ()
+;;                                 (interactive)
+;;                                 (windmove-down)))
 
 ;; split window ish
 (setq split-width-threshold 200)
@@ -501,13 +542,9 @@ point reaches the beginning or end of the buffer, stop there."
  '(custom-safe-themes
    '("e9740103f6ae2cbc97fef889b85b1c51b4d4a2d95c2b398b57a1842d14d96304" "2593436c53c59d650c8e3b5337a45f0e1542b1ba46ce8956861316e860b145a0" "38143778a2b0b81fb7c7d0e286e5b0e27cd6b2ba1c3b0aa4efbc33e6ac2ed482" "3860a842e0bf585df9e5785e06d600a86e8b605e5cc0b74320dfe667bcbe816c" "36ca8f60565af20ef4f30783aa16a26d96c02df7b4e54e9900a5138fb33808da" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "ed91d4e59412defda16b551eb705213773531f30eb95b69319ecd142fab118ca" "08141ce5483bc173c3503d9e3517fca2fb3229293c87dc05d49c4f3f5625e1df" default))
  '(fringe-mode 10 nil (fringe))
- '(global-origami-mode t)
- '(js-switch-indent-offset 4)
- '(js2-indent-switch-body t)
  '(linum-format " %6d ")
  '(main-line-color1 "#222232")
  '(main-line-color2 "#333343")
- '(org-startup-indented t)
  '(package-selected-packages
    '(lsp-metals sbt-mode dash ## rust-mode yaml-mode zweilight-theme terraform-mode indent-guide nim-mode ag rainbow-delimiters swiper dakrone-theme grandshell-theme f company emojify tide haskell-mode ample-theme restclient restclient-test scala-mode reason-mode indium web-mode use-package htmlize dashboard utop tuareg monokai-theme magit org-bullets org-link-minor-mode origami projectile flycheck yasnippet js2-mode))
  '(powerline-color1 "#222232")
@@ -526,5 +563,5 @@ point reaches the beginning or end of the buffer, stop there."
 
 
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
