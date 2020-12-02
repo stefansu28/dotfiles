@@ -23,8 +23,7 @@ link_dir() {
     done
 }
 
-exists()
-{
+exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
@@ -46,8 +45,7 @@ link_dir ~/.emacs.d emacs.d
 # delete_and_link ~/asciiArt asciiArt
 
 
-# TODO
-# if exists i3; then
-#   echo "Initializing i3..."
-#   delete_and_link ~/.i3/config i3/config
-# fi
+if exists i3; then
+  echo "Initializing i3..."
+  link_dir ~/.i3 i3
+fi
