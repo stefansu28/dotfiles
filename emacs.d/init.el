@@ -330,21 +330,22 @@
 
 
 ;; try to get language server working
-;; (use-package lsp-mode
-;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-;;          ;; (rust-mode . lsp)
-;;          (scala-mode . lsp)
-;;          ;; if you want which-key integration
-;;          ;; (lsp-mode . lsp-enable-which-key-integration)
-;;          )
-;;   :commands lsp
-;;   :config
-;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l", "s-l")
-;;   (setq lsp-keymap-prefix "C-c l"))
+(use-package lsp-mode
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         ;; (rust-mode . lsp)
+         (scala-mode . lsp)
+         ;; if you want which-key integration
+         ;; (lsp-mode . lsp-enable-which-key-integration)
+         )
+  :commands lsp
+  :config
+  (add-hook 'lsp-managed-mode-hook (lambda () (setq-local company-backends '(company-capf))))
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l", "s-l")
+  (setq lsp-keymap-prefix "C-c l"))
 
 ;; scala lsp backend
-;; (use-package lsp-metals
-;;   :config (setq lsp-metals-treeview-show-when-views-received nil))
+(use-package lsp-metals
+  :config (setq lsp-metals-treeview-show-when-views-received nil))
 
 ;; no tool bar and no scroll bar
 (menu-bar-mode -1)
@@ -556,7 +557,7 @@ point reaches the beginning or end of the buffer, stop there."
  '(main-line-color1 "#222232")
  '(main-line-color2 "#333343")
  '(package-selected-packages
-   '(lsp-metals sbt-mode dash ## rust-mode yaml-mode zweilight-theme terraform-mode indent-guide nim-mode ag rainbow-delimiters swiper dakrone-theme grandshell-theme f company emojify tide haskell-mode ample-theme restclient restclient-test scala-mode reason-mode indium web-mode use-package htmlize dashboard utop tuareg monokai-theme magit org-bullets org-link-minor-mode origami projectile flycheck yasnippet js2-mode))
+   '(lsp-mode vlf lsp-metals sbt-mode dash ## rust-mode yaml-mode zweilight-theme terraform-mode indent-guide nim-mode ag rainbow-delimiters swiper dakrone-theme grandshell-theme f company emojify tide haskell-mode ample-theme restclient restclient-test scala-mode reason-mode indium web-mode use-package htmlize dashboard utop tuareg monokai-theme magit org-bullets org-link-minor-mode origami projectile flycheck yasnippet js2-mode))
  '(powerline-color1 "#222232")
  '(powerline-color2 "#333343")
  '(window-min-width 10))
