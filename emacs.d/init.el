@@ -530,6 +530,10 @@ point reaches the beginning or end of the buffer, stop there."
 ;;                                 (interactive)
 ;;                                 (windmove-down)))
 
+
+;; replace-string binding
+(global-set-key (kbd "C-c r") 'replace-string)
+
 ;; split window ish
 (setq split-width-threshold 200)
 (setq split-height-threshold nil)
